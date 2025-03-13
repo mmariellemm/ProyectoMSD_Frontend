@@ -22,45 +22,47 @@ const ClientesEdit: React.FC<ClientesEditProps> = ({ cliente, onUpdateCliente, o
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Editar Cliente</h2>
-      <form onSubmit={handleSubmit} className="bg-white p-4 shadow-md rounded-lg">
-        <div className="mb-2">
-          <label className="block text-sm font-semibold">Nombre:</label>
-          <input
-            type="text"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            className="w-full border p-2 rounded-lg"
-            required
-          />
-        </div>
-        <div className="mb-2">
-          <label className="block text-sm font-semibold">Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border p-2 rounded-lg"
-            required
-          />
-        </div>
-        <div className="flex gap-2 mt-2">
-          <button
-            type="submit"
-            className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
-          >
-            Guardar Cambios
-          </button>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500"
-          >
-            Cancelar
-          </button>
-        </div>
-      </form>
+    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+      <div className="w-100 max-w-md p-4 bg-white rounded shadow-lg">
+        <h2 className="text-center mb-4 text-dark">Editar Cliente</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label">Nombre:</label>
+            <input
+              type="text"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              className="form-control"
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="form-control"
+              required
+            />
+          </div>
+          <div className="d-flex gap-2 mt-4">
+            <button
+              type="submit"
+              className="btn btn-success w-100 py-2"
+            >
+              Guardar Cambios
+            </button>
+            <button
+              type="button"
+              onClick={onCancel}
+              className="btn btn-secondary w-100 py-2"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

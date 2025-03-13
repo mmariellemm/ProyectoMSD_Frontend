@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import ClientesList from "./assets/complemento/Clientes/ClientesList";
 import ClientesAdd from "./assets/complemento/Clientes/ClientesAdd";
 import ClientesEdit from "./assets/complemento/Clientes/CientesEdit";
@@ -25,19 +26,24 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="p-6">
-      {clienteEditando ? (
-        <ClientesEdit
-          cliente={clienteEditando}
-          onUpdateCliente={handleUpdateCliente}
-          onCancel={() => setClienteEditando(null)}
-        />
-      ) : (
-        <>
-          <ClientesAdd onAddCliente={handleAddCliente} />
-          <ClientesList clientes={clientes} onDeleteCliente={handleDeleteCliente} />
-        </>
-      )}
+    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+      <div className="card shadow-lg p-4" style={{ width: "100%" }}>
+        <h2 className="text-center mb-4">Gestión de Clientes</h2>
+        {clienteEditando ? (
+          <ClientesEdit
+            cliente={clienteEditando}
+            onUpdateCliente={handleUpdateCliente}
+            onCancel={() => setClienteEditando(null)}
+          />
+        ) : (
+          <>
+            <ClientesAdd onAddCliente={handleAddCliente} />
+            <div className="mt-4">
+              <ClientesList clientes={clientes} onDeleteCliente={handleDeleteCliente} />
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

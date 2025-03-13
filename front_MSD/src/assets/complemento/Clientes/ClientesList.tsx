@@ -13,27 +13,30 @@ interface ClientesListProps {
 
 const ClientesList: React.FC<ClientesListProps> = ({ clientes, onDeleteCliente }) => {
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Lista de Clientes</h2>
-      <ul className="border rounded-lg p-4 bg-white shadow-md">
-        {clientes.length > 0 ? (
-          clientes.map((cliente) => (
-            <li key={cliente.id} className="border-b py-2 last:border-none flex justify-between items-center">
-              <span>
-                <strong>{cliente.nombre}</strong> - {cliente.email}
-              </span>
-              <button
-                onClick={() => onDeleteCliente(cliente.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600"
-              >
-                Eliminar
-              </button>
-            </li>
-          ))
-        ) : (
-          <p className="text-gray-500">No hay clientes disponibles.</p>
-        )}
-      </ul>
+    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+      <div className="w-100 max-w-4xl p-4 bg-white rounded shadow-lg">
+        <h2 className="text-center mb-4 text-dark">Lista de Clientes</h2>
+        <ul className="list-group">
+          {clientes.length > 0 ? (
+            clientes.map((cliente) => (
+              <li key={cliente.id} className="list-group-item d-flex justify-content-between align-items-center py-3 px-4 border-bottom">
+                <div className="d-flex flex-column">
+                  <span className="fw-semibold text-dark">{cliente.nombre}</span>
+                  <span className="text-muted small">{cliente.email}</span>
+                </div>
+                <button
+                  onClick={() => onDeleteCliente(cliente.id)}
+                  className="btn btn-danger btn-sm"
+                >
+                  Eliminar
+                </button>
+              </li>
+            ))
+          ) : (
+            <p className="text-center text-muted py-4">No hay clientes disponibles.</p>
+          )}
+        </ul>
+      </div>
     </div>
   );
 };
