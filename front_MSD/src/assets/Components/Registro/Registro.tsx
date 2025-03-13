@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "./Register.css";
+import "./Registro.css";
 
 const Register: React.FC = () => {
     const [email, setEmail] = useState("");

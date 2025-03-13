@@ -1,9 +1,11 @@
-import Auth from "./assets/Components/Auth";
+import Login from "./assets/Components/Login/Login";
+import Registro from "./assets/Components/Registro/Registro";
 
 function App() {
   return (
     <div>
-      <Auth />
+      <Login></Login>
+      <Registro></Registro>
     </div>
   );
 }
