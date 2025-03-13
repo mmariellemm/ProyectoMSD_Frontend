@@ -1,35 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from "react";
+import './App.css';
+import ProductManager from './assets/Componentes/Login/ProductManager';
 
-function App() {
-  const [count, setCount] = useState(0)
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  description: string;
+};
 
+const App: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    // Recuperar los productos desde localStorage cuando la página se carga
+    const storedProducts = localStorage.getItem('products');
+    if (storedProducts) {
+      setProducts(JSON.parse(storedProducts));
+    }
+  }, []);
+
+ useEffect(() => {
+    // Guardar productos en localStorage cada vez que cambien
+    if (products.length > 0) {
+      localStorage.setItem("products", JSON.stringify(products));
+    }
+  }, [products]);
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1 className="text-2xl font-bold text-center mt-4">Tienda Online</h1>
+      <ProductManager products={products} setProducts={setProducts} />
     </>
-  )
-}
+  );
+};
 
-export default App
+export default App;
