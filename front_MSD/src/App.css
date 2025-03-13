@@ -40,3 +40,242 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Establecemos el fondo general y la tipografía */
+body {
+  background-color: #000000; /* Fondo claro */
+  font-family: 'Arial', sans-serif; /* Tipografía básica */
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilo del título principal */
+h1 {
+  color: #333; /* Color del texto */
+  text-align: center; /* Centrado */
+  margin-top: 2rem; /* Espacio superior */
+}
+
+/* Contenedor de la tarjeta de producto */
+.product-card {
+  transition: all 0.3s ease-in-out; /* Animación suave */
+}
+
+/* Efecto hover: se agranda un poco la tarjeta */
+.product-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+/* Estilo de la imagen de cada producto */
+.product-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover; /* Mantiene la relación de aspecto */
+  border-radius: 10px; /* Bordes redondeados */
+}
+
+/* Estilos para el contenedor del grid de productos */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Se adapta a diferentes tamaños de pantalla */
+  gap: 1rem; /* Espacio entre las tarjetas */
+  padding: 20px; /* Espacio interno */
+}
+
+/* Estilo para los contenedores de cada tarjeta de producto */
+.card {
+  background-color: #fff; /* Fondo blanco */
+  padding: 1rem; /* Relleno */
+  border-radius: 8px; /* Bordes redondeados */
+  border: 1px solid #ddd; /* Borde gris */
+  text-align: center; /* Centrado de texto */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
+}
+
+.card h3 {
+  font-size: 1.1rem; /* Tamaño de fuente */
+  font-weight: bold; /* Negrita */
+  margin: 1rem 0; /* Margen superior e inferior */
+}
+
+.card p {
+  color: #555; /* Color gris para el texto */
+  font-size: 0.9rem; /* Tamaño de fuente más pequeño */
+}
+
+.card .price {
+  font-weight: bold; /* Precio en negrita */
+  color: #2a9d8f; /* Color verde para el precio */
+}
+ 
+/* Estilo para la sección de lectura de documentación */
+.read-the-docs {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+/* Establecemos el fondo general y la tipografía */
+body {
+  background-color: #0068a9; /* Fondo claro */
+  font-family: 'Arial', sans-serif; /* Tipografía básica */
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilo del título principal */
+h1 {
+  color: #000000; /* Color del texto */
+  text-align: center; /* Centrado */
+  margin-top: 2rem; /* Espacio superior */
+}
+
+/* Contenedor de la tarjeta de producto */
+.product-card {
+  transition: all 0.3s ease-in-out; /* Animación suave */
+}
+
+/* Efecto hover: se agranda un poco la tarjeta */
+.product-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+/* Estilo de la imagen de cada producto */
+.product-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover; /* Mantiene la relación de aspecto */
+  border-radius: 10px; /* Bordes redondeados */
+}
+
+/* Estilos para el contenedor del grid de productos */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Se adapta a diferentes tamaños de pantalla */
+  gap: 1rem; /* Espacio entre las tarjetas */
+  padding: 20px; /* Espacio interno */
+}
+
+/* Estilo para los contenedores de cada tarjeta de producto */
+.card {
+  background-color: #fff; /* Fondo blanco */
+  padding: 1rem; /* Relleno */
+  border-radius: 8px; /* Bordes redondeados */
+  border: 1px solid #ddd; /* Borde gris */
+  text-align: center; /* Centrado de texto */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Sombra suave */
+}
+
+.card h3 {
+  font-size: 1.1rem; /* Tamaño de fuente */
+  font-weight: bold; /* Negrita */
+  margin: 1rem 0; /* Margen superior e inferior */
+}
+
+.card p {
+  color: #555; /* Color gris para el texto */
+  font-size: 0.9rem; /* Tamaño de fuente más pequeño */
+}
+
+.card .price {
+  font-weight: bold; /* Precio en negrita */
+  color: #2a9d8f; /* Color verde para el precio */
+}
+
+/* Estilo para la sección de lectura de documentación */
+.read-the-docs {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: #000000;
+}
+
+/* Estilos para la tabla de productos */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+thead {
+  background-color: #4c4c4c;
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #000000;
+}
+
+th {
+  font-weight: bold;
+}
+
+tr:hover {
+  background-color: #ffffff27;
+}
+
+img {
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo específico para las imágenes dentro de la tabla */
+table img {
+  width: 50px; /* Ajusta el tamaño de las imágenes dentro de la tabla */
+  height: 50px;
+  object-fit: cover; /* Mantiene la relación de aspecto */
+  border-radius: 8px; /* Bordes redondeados */
+}
+
+/* Estilos para la tabla de productos */
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.product-table thead {
+  background-color: #4c4c4c;
+  color: white;
+}
+
+.product-table th, .product-table td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #dee2e6;
+}
+
+.product-table th {
+  font-weight: bold;
+}
+
+.product-table tr:hover {
+  background-color: #0000002d;
+}
+
+.product-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.btn-add{
+  margin-top: 2rem;
+}
+
+.btn-product{
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;;
+}
