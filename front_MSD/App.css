@@ -279,3 +279,9 @@ table img {
   margin-left: 0.5rem;
   margin-right: 0.5rem;;
 }
+
+.list-empleados{
+        list-style: none; /* Elimina los puntos */
+        padding: 0; /* Opcional: elimina el espacio extra a la izquierda */
+        margin: 2px; /* Opcional: elimina el margen predeterminado */
+}
