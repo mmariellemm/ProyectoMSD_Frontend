@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from "react-router-dom";
+import { Route, Routes, Link, useNavigate } from "react-router-dom";
 import ClientesList from "./assets/Components/Clientes/ClientesList";
 import ClientesAdd from "./assets/Components/Clientes/ClientesAdd";
 import ClientesEdit from "./assets/Components/Clientes/CientesEdit";
@@ -131,157 +131,102 @@ const App: React.FC = () => {
   };
 
   return (
-    <Router>
-      <div className="container-fluid vw-100 p-0 d-flex flex-column">
-        {/* Barra de navegación */}
-        <header className="bg-primary text-white text-center py-3">
-          <h1>Sistema de Gestión y Tienda Online</h1>
-          <nav className="d-flex justify-content-center gap-3">
-            <Link to="/" className="text-white text-decoration-none">
-              Gestión de Clientes
-            </Link>
-            <Link to="/pos" className="text-white text-decoration-none">
-              Punto de Venta
-            </Link>
-            <Link to="/tienda" className="text-white text-decoration-none">
-              Tienda Online
-            </Link>
-            <Link to="/productos" className="text-white text-decoration-none">
-              Productos
-            </Link>
-            <Link to="/empleadosForm" className="text-white text-decoration-none">
-              Agregar Empleado
-            </Link>
-            <Link to="/empleadosTable" className="text-white text-decoration-none">
-              Ver Empleados
-            </Link>
-            <Link to="/ticket" className="text-white text-decoration-none">
-              Ticket
-            </Link>
-            <Link to="/login" className="text-white text-decoration-none">
-              Login
-            </Link>
-            <Link to="/registro" className="text-white text-decoration-none">
-              Registro
-            </Link>
-          </nav>
-        </header>
+    <div className="container-fluid vh-100 p-0 d-flex">
+      {/* Sidebar (Barra de navegación lateral) */}
+      <nav className="bg-primary text-white sidebar">
+        <div className="sidebar-sticky">
+          <h1 className="text-center py-3">Sistema</h1>
+          <ul className="nav flex-column">
+            <li className="nav-item">
+              <Link to="/" className="nav-link text-white">
+                Gestión de Clientes
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/pos" className="nav-link text-white">
+                Punto de Venta
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/tienda" className="nav-link text-white">
+                Tienda Online
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/productos" className="nav-link text-white">
+                Productos
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/empleadosForm" className="nav-link text-white">
+                Agregar Empleado
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/empleadosTable" className="nav-link text-white">
+                Ver Empleados
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/ticket" className="nav-link text-white">
+                Ticket
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/login" className="nav-link text-white">
+                Login
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/registro" className="nav-link text-white">
+                Registro
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </nav>
 
-        {/* Contenido principal */}
-        <div className="flex-grow-1 d-flex">
-          <div className="col-12 h-100 d-flex flex-column p-4 bg-light">
-            <Routes>
-              {/* Ruta principal: Gestión de Clientes */}
-              <Route
-                path="/"
-                element={
-                  <div className="card shadow-lg flex-grow-1">
-                    <div className="card-body">
-                      <h2 className="text-center mb-4">Gestión de Clientes</h2>
-                      {clienteEditando ? (
-                        <ClientesEdit
-                          cliente={clienteEditando}
-                          onUpdateCliente={handleUpdateCliente}
-                          onCancel={() => setClienteEditando(null)}
-                        />
-                      ) : (
-                        <>
-                          <ClientesAdd onAddCliente={handleAddCliente} />
-                          <div className="mt-4">
-                            <ClientesList clientes={clientes} onDeleteCliente={handleDeleteCliente} />
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                }
-              />
-
-              {/* Ruta para el Punto de Venta */}
-              <Route
-                path="/pos"
-                element={
-                  <div className="card shadow-lg flex-grow-1">
-                    <div className="card-body">
-                      <POS />
-                    </div>
-                  </div>
-                }
-              />
-
-              {/* Ruta para la Tienda Online */}
-              <Route
-                path="/tienda"
-                element={
-                  <div className="card shadow-lg flex-grow-1">
-                    <div className="card-body">
-                      <h1 className="text-2xl font-bold text-center mt-4">Tienda Online</h1>
-                      <ProductManager products={products} setProducts={setProducts} />
-                    </div>
-                  </div>
-                }
-              />
-
-              {/* Ruta para Productos */}
-              <Route
-                path="/productos"
-                element={
-                  <div className="card shadow-lg flex-grow-1">
-                    <div className="card-body">
-                      <ProductoVista products={products} onEdit={handleEditProduct} onDelete={handleDeleteProduct} />
-                    </div>
-                  </div>
-                }
-              />
-
-              {/* Ruta para Agregar/Editar Producto */}
-              <Route
-                path="/agregar-producto"
-                element={
-                  <div className="card shadow-lg flex-grow-1">
-                    <div className="card-body">
-                      <ProductoAgregar onSubmit={handleProductSubmit} onClose={() => navigate("/productos")} />
-                    </div>
-                  </div>
-                }
-              />
-
-              {/* Ruta para Agregar/Editar Empleado */}
-              <Route
-                path="/empleadosForm/:id?"
-                element={
-                  <div className="card shadow-lg flex-grow-1">
-                    <div className="card-body">
-                      <EmpleadosForm
-                        employees={employees}
-                        onSubmit={handleEmployeeSubmit}
+      {/* Contenido principal */}
+      <div className="flex-grow-1 d-flex flex-column">
+        <div className="p-4 bg-light flex-grow-1">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <div className="card shadow-lg">
+                  <div className="card-body">
+                    <h2 className="text-center mb-4">Gestión de Clientes</h2>
+                    {clienteEditando ? (
+                      <ClientesEdit
+                        cliente={clienteEditando}
+                        onUpdateCliente={handleUpdateCliente}
+                        onCancel={() => setClienteEditando(null)}
                       />
-                    </div>
+                    ) : (
+                      <>
+                        <ClientesAdd onAddCliente={handleAddCliente} />
+                        <div className="mt-4">
+                          <ClientesList clientes={clientes} onDeleteCliente={handleDeleteCliente} />
+                        </div>
+                      </>
+                    )}
                   </div>
-                }
-              />
-
-              {/* Ruta para Ver Empleados */}
-              <Route
-                path="/empleadosTable"
-                element={
-                  <div className="card shadow-lg flex-grow-1">
-                    <div className="card-body">
-                      <EmpleadoTable employees={employees} onEdit={handleEditProduct} onDelete={handleDeleteProduct} />
-                    </div>
-                  </div>
-                }
-              />
-
-              {/* Otras rutas */}
-              <Route path="/ticket" element={<Ticket />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/registro" element={<Registro />} />
-            </Routes>
-          </div>
+                </div>
+              }
+            />
+            <Route path="/pos" element={<POS />} />
+            <Route path="/tienda" element={<ProductManager products={products} setProducts={setProducts} />} />
+            <Route path="/productos" element={<ProductoVista products={products} onEdit={handleEditProduct} onDelete={handleDeleteProduct} />} />
+            <Route path="/agregar-producto" element={<ProductoAgregar onSubmit={handleProductSubmit} onClose={() => navigate("/productos")} />} />
+            <Route path="/empleadosForm/:id?" element={<EmpleadosForm employees={employees} onSubmit={handleEmployeeSubmit} />} />
+            <Route path="/empleadosTable" element={<EmpleadoTable employees={employees} onEdit={handleEditProduct} onDelete={handleDeleteProduct} />} />
+            <Route path="/ticket" element={<Ticket />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/registro" element={<Registro />} />
+          </Routes>
         </div>
       </div>
-    </Router>
+    </div>
   );
 };
 
