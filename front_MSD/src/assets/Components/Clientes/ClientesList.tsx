@@ -1,42 +1,36 @@
 import React from "react";
-
-interface Cliente {
-  id: number;
-  nombre: string;
-  email: string;
-}
+import { Cliente } from "../../../interfaces/types";
 
 interface ClientesListProps {
   clientes: Cliente[];
   onDeleteCliente: (id: number) => void;
+  onEditCliente: (cliente: Cliente) => void; // Añadir esta propiedad aquí
 }
 
-const ClientesList: React.FC<ClientesListProps> = ({ clientes, onDeleteCliente }) => {
+const ClientesList: React.FC<ClientesListProps> = ({ clientes, onDeleteCliente, onEditCliente }) => {
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-      <div className="w-100 max-w-4xl p-4 bg-white rounded shadow-lg">
-        <h2 className="text-center mb-4 text-dark">Lista de Clientes</h2>
-        <ul className="list-group">
-          {clientes.length > 0 ? (
-            clientes.map((cliente) => (
-              <li key={cliente.id} className="list-group-item d-flex justify-content-between align-items-center py-3 px-4 border-bottom">
-                <div className="d-flex flex-column">
-                  <span className="fw-semibold text-dark">{cliente.nombre}</span>
-                  <span className="text-muted small">{cliente.email}</span>
-                </div>
-                <button
-                  onClick={() => onDeleteCliente(cliente.id)}
-                  className="btn btn-danger btn-sm"
-                >
-                  Eliminar
-                </button>
-              </li>
-            ))
-          ) : (
-            <p className="text-center text-muted py-4">No hay clientes disponibles.</p>
-          )}
-        </ul>
-      </div>
+    <div>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {clientes.map(cliente => (
+            <tr key={cliente.id}>
+              <td>{cliente.nombre}</td>
+              <td>{cliente.email}</td>
+              <td>
+                <button onClick={() => onEditCliente(cliente)}>Editar</button>
+                <button onClick={() => onDeleteCliente(cliente.id)}>Eliminar</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

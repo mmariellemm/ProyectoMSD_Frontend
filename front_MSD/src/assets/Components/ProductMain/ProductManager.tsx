@@ -93,7 +93,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ products, setProducts }
           setIsEditing(false);
           setNewProduct({ id: 0, name: "", price: 0, image: "", description: "" });
         }}
-        className="btn-add fixed bottom-6 right-6 bg-blue-500 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-600 transition"
+        className="btn-add fixed bottom-6 right-6 bg-blue-500 text-black px-6 py-3 rounded-full shadow-lg hover:bg-blue-600 transition"
       >
         + Agregar Producto
       </button>

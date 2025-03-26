@@ -14,3 +14,9 @@ export interface Employee {
     description: string;
     image: string;
   }
+
+  export interface Cliente {
+    id: number;
+    nombre: string;
+    email: string;
+  }

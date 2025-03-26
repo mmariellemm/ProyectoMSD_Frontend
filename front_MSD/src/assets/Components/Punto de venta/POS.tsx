@@ -1,81 +1,182 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Usamos useNavigate en lugar de useHistory
+import { useLocation, useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Modal, Button } from 'react-bootstrap';
+import { Product } from "../../../interfaces/types";
+import PaymentForm from "./PaymentForm";
+import AmountForm from "./AmountForm";
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
+interface CartItem extends Product {
+  quantity: number;
 }
 
-const products: Product[] = [
-  { id: 1, name: "Camiseta Negra", price: 20 },
-  { id: 2, name: "Jeans Azul", price: 35 },
-  { id: 3, name: "Zapatillas Blancas", price: 50 },
-  { id: 4, name: "Chaqueta de Cuero", price: 80 },
-  { id: 5, name: "Gorra Roja", price: 15 },
-];
-
 const POS: React.FC = () => {
-  const [cart, setCart] = useState<Product[]>([]); // Definimos explícitamente que cart es un array de Product
-  const navigate = useNavigate(); // Usamos useNavigate en lugar de useHistory
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Recupera el carrito y el método de pago desde el estado de la ubicación
+  const receivedCart = (location.state as { cart: CartItem[], paymentMethod: string }) || { cart: [], paymentMethod: "" };
+  const [cartItems, setCartItems] = useState<CartItem[]>(receivedCart.cart);
+  const [amountPaid, setAmountPaid] = useState<number>(0); // Guardar el monto pagado
+  const [showModal, setShowModal] = useState<boolean>(false);
 
-  const addToCart = (product: Product) => {
-    setCart([...cart, product]);
+  const getSafePrice = (price: any): number => {
+    const num = typeof price === 'number' ? price : Number(price);
+    return isNaN(num) ? 0 : num;
   };
 
-  const removeFromCart = (id: number) => {
-    setCart(cart.filter((item) => item.id !== id));
+  const handleQuantityChange = (id: number, newQuantity: number) => {
+    if (newQuantity < 1) return;
+    
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const getItemSubtotal = (item: CartItem) => {
+    const price = getSafePrice(item.price);
+    return price * item.quantity;
   };
 
   const getTotal = () => {
-    return cart.reduce((total, item) => total + item.price, 0);
+    return cartItems.reduce((total, item) => total + getItemSubtotal(item), 0);
   };
 
-  const handlePayment = () => {
+  const handlePayment = (payment: number) => {
+    setAmountPaid(payment);
+    if (receivedCart.paymentMethod === "Efectivo" && payment < getTotal()) {
+      alert("El monto ingresado es insuficiente.");
+      return;
+    }
+    setShowModal(true);
+  };
+
+  const handleConfirm = () => {
     navigate("/ticket", {
-      state: { cart, total: getTotal() }, // Pasamos el cart y el total a la siguiente página
+      state: {
+        cart: cartItems.map(item => ({
+          ...item,
+          price: getSafePrice(item.price)
+        })),
+        total: getTotal(),
+        amountPaid,
+        change: receivedCart.paymentMethod === "Efectivo" ? amountPaid - getTotal() : 0
+      },
     });
   };
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="container mt-4">
+        <h2>Punto de Venta</h2>
+        <div className="alert alert-warning">El carrito está vacío</div>
+        <button 
+          className="btn btn-primary"
+          onClick={() => navigate(-1)}
+        >
+          Volver a la tienda
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-4">
       <h2>Punto de Venta</h2>
       <div className="row">
-        <div className="col-md-6">
-          <h4>Productos</h4>
-          <ul className="list-group">
-            {products.map((product) => (
-              <li
-                key={product.id} // Usamos product.id como key en lugar de index para mayor consistencia
-                className="list-group-item d-flex justify-content-between"
+        <div className="col-md-12">
+          <h4>Resumen de Compra</h4>
+          <ul className="list-group mb-4">
+            {cartItems.map((item) => {
+              const price = getSafePrice(item.price);
+              const subtotal = price * item.quantity;
+              
+              return (
+                <li key={item.id} className="list-group-item">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="d-flex align-items-center">
+                      {item.image && (
+                        <img 
+                          src={item.image} 
+                          alt={item.name} 
+                          className="img-thumbnail me-3"
+                          style={{ width: "60px", height: "60px", objectFit: "cover" }}
+                        />
+                      )}
+                      <div>
+                        <h6 className="mb-1">{item.name}</h6>
+                        <small className="text-muted">{item.description}</small>
+                      </div>
+                    </div>
+                    
+                    <div className="d-flex align-items-center">
+                      <div className="me-3 text-end">
+                        <div>Precio: ${price.toFixed(2)}</div>
+                        <div className="fw-bold">Subtotal: ${subtotal.toFixed(2)}</div>
+                      </div>
+                      
+                      <div className="input-group" style={{ width: "120px" }}>
+                        <button 
+                          className="btn btn-outline-secondary" 
+                          onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                        >
+                          -
+                        </button>
+                        <input 
+                          type="number" 
+                          className="form-control text-center"
+                          value={item.quantity}
+                          onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value) || 1)}
+                          min="1"
+                        />
+                        <button 
+                          className="btn btn-outline-secondary" 
+                          onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+          
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title d-flex justify-content-between">
+                <span>Total:</span>
+                <span>${getTotal().toFixed(2)}</span>
+              </h5>
+
+              {/* Mostrar el formulario correspondiente según el método de pago */}
+              {receivedCart.paymentMethod === "Tarjeta" ? (
+                <PaymentForm />
+              ) : (
+                <AmountForm totalPrice={getTotal()} onConfirm={handlePayment} />
+              )}
+
+              <button 
+                className="btn btn-success w-100 mt-2 py-2"
+                onClick={() => handlePayment(amountPaid)}
               >
-                {product.name} - ${product.price}
-                <button className="btn btn-primary btn-sm" onClick={() => addToCart(product)}>
-                  Agregar
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="col-md-6">
-          <h4>Carrito</h4>
-          <ul className="list-group">
-            {cart.map((item) => (
-              <li key={item.id} className="list-group-item d-flex justify-content-between">
-                {item.name} - ${item.price}
-                <button className="btn btn-danger btn-sm" onClick={() => removeFromCart(item.id)}>
-                  Quitar
-                </button>
-              </li>
-            ))}
-          </ul>
-          <h5 className="mt-3">Total: ${getTotal()}</h5>
-          <button className="btn btn-success mt-2" onClick={handlePayment}>
-            Pagar
-          </button>
+                Confirmar Pago
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Modal de confirmación */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Body className="text-center text-white bg-success p-4">
+          <h5>Se ha pagado y registrado correctamente</h5>
+          <Button variant="light" className="mt-3" onClick={handleConfirm}>Aceptar</Button>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

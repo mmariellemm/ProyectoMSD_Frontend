@@ -26,13 +26,13 @@ const ProductList: React.FC<ProductListProps> = ({ products, onEdit, onDelete })
           <div className="flex gap-2 mt-2">
             <button
               onClick={() => onEdit(product)}
-              className="bg-yellow-500 text-white px-3 py-1 rounded"
+              className="bg-yellow-500 text-black px-3 py-1 rounded"
             >
               Editar
             </button>
             <button
               onClick={() => onDelete(product.id)} // Llama a onDelete con el id del producto
-              className="bg-red-500 text-white px-3 py-1 rounded"
+              className="bg-red-500 text-black px-3 py-1 rounded"
             >
               Eliminar
             </button>

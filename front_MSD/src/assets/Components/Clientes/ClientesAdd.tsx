@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 interface Cliente {
   id: number;
@@ -8,11 +8,13 @@ interface Cliente {
 
 interface ClientesAddProps {
   onAddCliente: (cliente: Cliente) => void;
+  onClose: () => void;
 }
 
-const ClientesAdd: React.FC<ClientesAddProps> = ({ onAddCliente }) => {
-  const [nombre, setNombre] = useState("");
-  const [email, setEmail] = useState("");
+const ClientesAdd: React.FC<ClientesAddProps> = ({ onAddCliente, onClose }) => {
+  const [nombre, setNombre] = useState('');
+  const [email, setEmail] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,42 +27,52 @@ const ClientesAdd: React.FC<ClientesAddProps> = ({ onAddCliente }) => {
     };
 
     onAddCliente(nuevoCliente);
-    setNombre("");
-    setEmail("");
+    setShowSuccess(true);
+    setNombre('');
+    setEmail('');
+
+    // Redirigir después de 1.5 segundos
+    setTimeout(() => {
+      onClose();
+    }, 1500);
   };
 
   return (
     <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
       <div className="w-100 max-w-md p-4 bg-white rounded shadow-lg">
-        <h2 className="text-center mb-4 text-dark">Agregar Cliente</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">Nombre:</label>
-            <input
-              type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              className="form-control"
-              required
-            />
+        <h2 className="text-center mb-4">Agregar Cliente</h2>
+        
+        {showSuccess ? (
+          <div className="alert alert-success text-center">
+            ¡Cliente agregado exitosamente! Redirigiendo...
           </div>
-          <div className="mb-3">
-            <label className="form-label">Email:</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="form-control"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="btn btn-primary w-100 py-2"
-          >
-            Agregar Cliente
-          </button>
-        </form>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label">Nombre:</label>
+              <input
+                type="text"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Email:</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="form-control"
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-primary w-100 py-2">
+              Agregar Cliente
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );
