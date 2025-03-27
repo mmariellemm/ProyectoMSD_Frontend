@@ -15,8 +15,32 @@ export interface Employee {
     image: string;
   }
 
+  export interface Usuario {
+    id: number;
+    user: string;
+    email: string;
+    password: string;
+    rol: 'admin' | 'employee';
+  }
+
   export interface Cliente {
     id: number;
-    nombre: string;
+    name: string;
     email: string;
+    phone: string;
+  }
+
+  export interface Venta {
+    id: number;
+    fecha: string;
+    productos: { nombre: string; cantidad: number; precio: number }[];
+    total: number;
+    empleado?: string; // Opcional
+  }
+
+  export interface DetalleVenta {
+    id: number;
+    empleado: string;
+    fecha: string;
+    monto: number;
   }

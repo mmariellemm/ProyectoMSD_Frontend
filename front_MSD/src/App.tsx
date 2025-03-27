@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Route, Routes, Link, useNavigate } from "react-router-dom";
-import { FaStore, FaBoxOpen, FaUsers, FaUserTie, FaSignInAlt } from "react-icons/fa";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import ClientesList from "./assets/Components/Clientes/ClientesList";
 import ClientesAdd from "./assets/Components/Clientes/ClientesAdd";
 import ClientesEdit from "./assets/Components/Clientes/ClientesEdit";
@@ -14,11 +13,17 @@ import EmpleadoTable from "./assets/Components/Empledados/EmpleadoTable";
 import ProductoVista from "./assets/Components/productos/ProductoVista";
 import ProductoAgregar from "./assets/Components/productos/ProductoAgregar";
 import OnlineStore from "./assets/Components/ProductMain/OnlineStore";
-import { Employee, Product, Cliente } from "./interfaces/types";
+import { Employee, Product, Cliente, Venta } from "./interfaces/types";
+import Dashboard from "./assets/Components/Dashboard/Dashboard";
+import VentasAdd from "./assets/Components/Ventas/VentasAdd";
+import VentasEdit from "./assets/Components/Ventas/VentasEdit";
+import VentasList from "./assets/Components/Ventas/VentasList";
+import Navbar from "./assets/Components/Navbar";
 import './App.css';
 
 const App: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [ventas, setVentas] = useState<Venta[]>([]);
   const [products, setProducts] = useState<Product[]>(() => {
     const storedProducts = localStorage.getItem("products");
     return storedProducts ? JSON.parse(storedProducts) : [];
@@ -36,22 +41,20 @@ const App: React.FC = () => {
   };
 
   const handleAddCliente = (cliente: Cliente) => {
-    setClientes((prevClientes) => {
-      const updatedClientes = [...prevClientes, cliente];
-      localStorage.setItem("clientes", JSON.stringify(updatedClientes));
-      return updatedClientes;
-    });
-    setShowSuccessAlert(true);
-    setTimeout(() => setShowSuccessAlert(false), 3000);
-  };
-
-  const handleUpdateCliente = (updatedCliente: Cliente) => {
-    const updatedClientes = clientes.map(cliente =>
-      cliente.id === updatedCliente.id ? updatedCliente : cliente
-    );
-    setClientes(updatedClientes);
+  // Validar que tenga las propiedades requeridas
+  if (!cliente.name || !cliente.phone) {
+    console.error("Faltan propiedades requeridas en el cliente");
+    return;
+  }
+  
+  setClientes((prevClientes) => {
+    const updatedClientes = [...prevClientes, cliente];
     localStorage.setItem("clientes", JSON.stringify(updatedClientes));
-  };  
+    return updatedClientes;
+  });
+  setShowSuccessAlert(true);
+  setTimeout(() => setShowSuccessAlert(false), 3000);
+}; 
 
   const handleEditCliente = (cliente: Cliente) => {
     navigate(`/clientes/edit/${cliente.id}`);
@@ -61,6 +64,15 @@ const App: React.FC = () => {
     const updatedClientes = clientes.filter(cliente => cliente.id !== id);
     setClientes(updatedClientes);
     localStorage.setItem("clientes", JSON.stringify(updatedClientes));
+  };
+
+  const handleAddVenta = (venta: Venta) => {
+    setVentas([...ventas, venta]);
+  };
+
+  const handleUpdateVenta = (venta: Venta) => {
+    const updatedVentas = ventas.map(v => v.id === venta.id ? venta : v);
+    setVentas(updatedVentas);
   };
 
   const handleProductSubmit = (product: Product) => {
@@ -149,38 +161,8 @@ const App: React.FC = () => {
 
   return (
     <div className="container-fluid vw-100 p-0 d-flex">
-    <nav className="text-white sidebar vh-100 p-3" style={{ backgroundColor: "#0a3d83" }}>
-      <div className="sidebar-sticky">
-        <h1 className="text-center py-3">Sistema</h1>
-        <ul className="nav flex-column">
-          <li className="nav-item">
-            <Link to="/tienda" className="nav-link text-white d-flex align-items-center">
-              <FaStore className="me-2" /> Tienda Online
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/productos" className="nav-link text-white d-flex align-items-center">
-              <FaBoxOpen className="me-2" /> Gestión de Productos
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/clientes" className="nav-link text-white d-flex align-items-center">
-              <FaUsers className="me-2" /> Gestión de Clientes
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/empleadosTable" className="nav-link text-white d-flex align-items-center">
-              <FaUserTie className="me-2" /> Gestión de Empleados
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/" className="nav-link text-white d-flex align-items-center">
-              <FaSignInAlt className="me-2" /> Login
-            </Link>
-          </li>
-        </ul>
-      </div>
-    </nav>
+      {/* Add the Navbar here */}
+      <Navbar />
 
       <div className="flex-grow-1 d-flex flex-column">
         <div className="p-4 bg-light">
@@ -223,7 +205,7 @@ const App: React.FC = () => {
               path="/agregar-cliente"
               element={
                 <ClientesAdd
-                  onAddCliente={(cliente) => {
+                  onAddCliente={(cliente) => {  // Cambiado de clientes a cliente (singular)
                     handleAddCliente(cliente);
                     setTimeout(() => navigate("/clientes"), 1500);
                   }}
@@ -235,7 +217,7 @@ const App: React.FC = () => {
             <Route path="/pos" element={<POS />} />
             <Route path="/tienda" element={<OnlineStore products={products} />} />
             <Route
-              path="/productos"
+              path="/inventario"
               element={
                 <ProductoVista 
                   products={products} 
@@ -282,13 +264,17 @@ const App: React.FC = () => {
                 <ClientesEdit 
                   clientes={clientes} 
                   onEditCliente={handleEditCliente} 
-                  onUpdateCliente={handleUpdateCliente}
+                  onUpdateCliente={handleAddCliente}
                 />
               }
             />
+            <Route path="/ventas" element={<VentasList onAddVenta={() => {}} ventas={ventas} />} />
+            <Route path="/ventas/add" element={<VentasAdd onAddVenta={handleAddVenta} />} />
+            <Route path="/ventas/edit/:id" element={<VentasEdit ventas={ventas} onUpdateVenta={handleUpdateVenta} />} />
             <Route path="/ticket" element={<Ticket />} />
-            <Route path="/" element={<Login />} />  
+            <Route path="/login" element={<Login />} />  
             <Route path="/registro" element={<Registro />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </div>
       </div>

@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-
-interface Cliente {
-  id: number;
-  nombre: string;
-  email: string;
-}
+import { Cliente } from '../../../interfaces/types';
 
 interface ClientesAddProps {
   onAddCliente: (cliente: Cliente) => void;
@@ -14,24 +9,26 @@ interface ClientesAddProps {
 const ClientesAdd: React.FC<ClientesAddProps> = ({ onAddCliente, onClose }) => {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
+  const [telefono, setTelefono] = useState(''); // Nuevo estado para teléfono
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nombre || !email) return;
+    if (!nombre || !email || !telefono) return;
 
     const nuevoCliente: Cliente = {
       id: Date.now(),
-      nombre,
+      name: nombre, // Mapeamos nombre -> name
       email,
+      phone: telefono // Mapeamos telefono -> phone
     };
 
     onAddCliente(nuevoCliente);
     setShowSuccess(true);
     setNombre('');
     setEmail('');
+    setTelefono('');
 
-    // Redirigir después de 1.5 segundos
     setTimeout(() => {
       onClose();
     }, 1500);
@@ -64,6 +61,16 @@ const ClientesAdd: React.FC<ClientesAddProps> = ({ onAddCliente, onClose }) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className="form-control"
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Teléfono:</label>
+              <input
+                type="tel"
+                value={telefono}
+                onChange={(e) => setTelefono(e.target.value)}
                 className="form-control"
                 required
               />
