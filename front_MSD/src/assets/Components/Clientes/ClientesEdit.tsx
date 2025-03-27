@@ -4,9 +4,10 @@ import { Cliente } from "../../../interfaces/types";
 
 interface ClientesEditProps {
   clientes: Cliente[];
-  onUpdateCliente: (clienteActualizado: Cliente) => void;
-  onEditCliente?: (cliente: Cliente) => void;
+  onEditCliente: (cliente: Cliente) => void;
+  onUpdateCliente: (cliente: Cliente) => void;
 }
+
 
 const ClientesEdit: React.FC<ClientesEditProps> = ({ clientes, onUpdateCliente }) => {
   const { id } = useParams();  // Obtiene el ID del cliente desde la URL

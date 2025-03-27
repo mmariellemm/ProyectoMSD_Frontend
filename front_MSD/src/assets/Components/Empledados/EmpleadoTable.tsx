@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 interface EmpleadoTableProps {
   employees: Employee[];
-  onEdit: (id: number) => void; // Asegúrate de que esta línea esté presente
+  onEdit: (id: number) => void; 
   onDelete: (id: number) => void;
 }
 
@@ -13,13 +13,23 @@ const EmpleadoTable: React.FC<EmpleadoTableProps> = ({ employees, onDelete }) =>
   const navigate = useNavigate();
 
   const handleEditClick = (id: number) => {
-    navigate(`/empleadosForm/${id}`); // Redirige a EmpleadoForm con el ID del empleado
+    navigate(`/empleadosForm/${id}`);
+  };
+
+  const handleAddEmpleadoClick = () => {
+    navigate('/empleadosForm'); // Redirige a EmpleadosForm para agregar un nuevo empleado
   };
 
   return (
     <div> 
       <h2>Lista de Empleados</h2>
-      <table>
+      
+      {/* Botón para agregar un nuevo empleado */}
+      <button className="btn btn-success mb-3" onClick={handleAddEmpleadoClick}>
+        Agregar Empleado
+      </button>
+      
+      <table className="table table-bordered">
         <thead>
           <tr>
             <th>ID</th>

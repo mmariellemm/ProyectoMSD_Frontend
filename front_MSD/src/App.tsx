@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Route, Routes, Link, useNavigate } from "react-router-dom";
+import { FaStore, FaBoxOpen, FaUsers, FaUserTie, FaSignInAlt } from "react-icons/fa";
 import ClientesList from "./assets/Components/Clientes/ClientesList";
 import ClientesAdd from "./assets/Components/Clientes/ClientesAdd";
+import ClientesEdit from "./assets/Components/Clientes/ClientesEdit";
 import POS from "./assets/Components/Punto de venta/POS";
 import Ticket from "./assets/Components/Punto de venta/Ticket";
 import Login from "./assets/Components/Login/Login";
@@ -43,8 +45,16 @@ const App: React.FC = () => {
     setTimeout(() => setShowSuccessAlert(false), 3000);
   };
 
+  const handleUpdateCliente = (updatedCliente: Cliente) => {
+    const updatedClientes = clientes.map(cliente =>
+      cliente.id === updatedCliente.id ? updatedCliente : cliente
+    );
+    setClientes(updatedClientes);
+    localStorage.setItem("clientes", JSON.stringify(updatedClientes));
+  };  
+
   const handleEditCliente = (cliente: Cliente) => {
-    console.log(cliente);
+    navigate(`/clientes/edit/${cliente.id}`);
   };
 
   const handleDeleteCliente = (id: number) => {
@@ -139,48 +149,38 @@ const App: React.FC = () => {
 
   return (
     <div className="container-fluid vw-100 p-0 d-flex">
-      <nav className="bg-primary text-white sidebar">
-        <div className="sidebar-sticky">
-          <h1 className="text-center py-3">Sistema</h1>
-          <ul className="nav flex-column">
-            <li className="nav-item">
-              <Link to="/clientes" className="nav-link text-white">
-                Gestión de Clientes
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/pos" className="nav-link text-white">
-                Punto de Venta
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/tienda" className="nav-link text-white">
-                Tienda Online
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/productos" className="nav-link text-white">
-                Productos
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/empleadosForm" className="nav-link text-white">
-                Agregar Empleado
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/empleadosTable" className="nav-link text-white">
-                Ver Empleados
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/" className="nav-link text-white">
-                Login
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </nav>
+    <nav className="text-white sidebar vh-100 p-3" style={{ backgroundColor: "#0a3d83" }}>
+      <div className="sidebar-sticky">
+        <h1 className="text-center py-3">Sistema</h1>
+        <ul className="nav flex-column">
+          <li className="nav-item">
+            <Link to="/tienda" className="nav-link text-white d-flex align-items-center">
+              <FaStore className="me-2" /> Tienda Online
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/productos" className="nav-link text-white d-flex align-items-center">
+              <FaBoxOpen className="me-2" /> Gestión de Productos
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/clientes" className="nav-link text-white d-flex align-items-center">
+              <FaUsers className="me-2" /> Gestión de Clientes
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/empleadosTable" className="nav-link text-white d-flex align-items-center">
+              <FaUserTie className="me-2" /> Gestión de Empleados
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to="/" className="nav-link text-white d-flex align-items-center">
+              <FaSignInAlt className="me-2" /> Login
+            </Link>
+          </li>
+        </ul>
+      </div>
+    </nav>
 
       <div className="flex-grow-1 d-flex flex-column">
         <div className="p-4 bg-light">
@@ -276,8 +276,18 @@ const App: React.FC = () => {
                 />
               } 
             />
+            <Route 
+              path="/clientes/edit/:id" 
+              element={
+                <ClientesEdit 
+                  clientes={clientes} 
+                  onEditCliente={handleEditCliente} 
+                  onUpdateCliente={handleUpdateCliente}
+                />
+              }
+            />
             <Route path="/ticket" element={<Ticket />} />
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<Login />} />  
             <Route path="/registro" element={<Registro />} />
           </Routes>
         </div>

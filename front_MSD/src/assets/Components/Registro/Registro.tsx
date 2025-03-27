@@ -1,31 +1,59 @@
-import React, { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import "./Registro.css";
 
-const Register: React.FC = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+function Registro() {
+  const [nombre, setNombre] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [registroExitoso, setRegistroExitoso] = useState<boolean>(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (password !== confirmPassword) {
-            alert("Las contraseñas no coinciden");
-            return;
-        }
-        console.log("Registrando usuario", { email, password });
-    };
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setRegistroExitoso(true);
+    setNombre("");
+    setEmail("");
+    setPassword("");
+  };
 
-    return (
-        <div className="register-container">
-            <h2>Registrarse</h2>
-            <form onSubmit={handleSubmit}>
-                <input type="email" placeholder="Correo" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                <input type="password" placeholder="Confirmar Contraseña" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-                <button type="submit">Registrarse</button>
-            </form>
-        </div>
-    );
-};
+  return (
+    <div className="registro-container">
+      <h2>Registro</h2>
+      {registroExitoso ? (
+        <p className="success-message">Registro exitoso!</p>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <div className="input-container">
+            <label>Nombre:</label>
+            <input
+              type="text"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-container">
+            <label>Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-container">
+            <label>Contraseña:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit">Registrarse</button>
+        </form>
+      )}
+    </div>
+  );
+}
 
-export default Register;
+export default Registro;

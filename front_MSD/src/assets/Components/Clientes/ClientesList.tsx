@@ -1,13 +1,20 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Cliente } from "../../../interfaces/types";
 
 interface ClientesListProps {
   clientes: Cliente[];
   onDeleteCliente: (id: number) => void;
-  onEditCliente: (cliente: Cliente) => void; // Añadir esta propiedad aquí
+  onEditCliente: (cliente: Cliente) => void;
 }
 
-const ClientesList: React.FC<ClientesListProps> = ({ clientes, onDeleteCliente, onEditCliente }) => {
+
+const ClientesList: React.FC<ClientesListProps> = ({ clientes, onDeleteCliente }) => {
+  const navigate = useNavigate();
+
+  const handleEditCliente = (cliente: Cliente) => {
+    navigate(`/clientes/edit/${cliente.id}`);
+  };
   return (
     <div>
       <table className="table">
@@ -24,7 +31,7 @@ const ClientesList: React.FC<ClientesListProps> = ({ clientes, onDeleteCliente, 
               <td>{cliente.nombre}</td>
               <td>{cliente.email}</td>
               <td>
-                <button onClick={() => onEditCliente(cliente)}>Editar</button>
+                <button onClick={() => handleEditCliente(cliente)}>Editar</button>
                 <button onClick={() => onDeleteCliente(cliente.id)}>Eliminar</button>
               </td>
             </tr>

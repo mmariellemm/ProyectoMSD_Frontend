@@ -1,25 +1,54 @@
-import React, { useState } from 'react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
-const Login: React.FC = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+function Login() {
+  const navigate = useNavigate();
+  const [usuario, setUsuario] = useState<string>("");
+  const [contrasena, setContrasena] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log("Logging in with", { email, password });
-    };
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (usuario === "sharis" && contrasena === "12345") {
+      navigate("/dashboard");
+    } else {
+      setError("Credenciales incorrectas");
+    }
+  };
 
-    return (
-        <div className="login-container">
-            <h2>Iniciar Sesión</h2>
-            <form onSubmit={handleSubmit}>
-                <input type="email" placeholder="Correo" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                <button type="submit">Ingresar</button>
-            </form>
+  const handleRegistro = () => {
+    navigate("/registro");
+  };
+
+  return (
+    <div className="login-container">
+      <h2>Iniciar Sesión</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="input-container">
+          <label>Usuario:</label>
+          <input
+            type="text"
+            value={usuario}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsuario(e.target.value)}
+            required
+          />
         </div>
-    );
-};
+        <div className="input-container">
+          <label>Contraseña:</label>
+          <input
+            type="password"
+            value={contrasena}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setContrasena(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Iniciar Sesión</button>
+      </form>
+      {error && <p className="error-message">{error}</p>}
+      <button onClick={handleRegistro}>Ir a Registro</button>
+    </div>
+  );
+}
 
 export default Login;
