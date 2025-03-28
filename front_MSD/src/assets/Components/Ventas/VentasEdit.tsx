@@ -8,73 +8,70 @@ interface VentasEditProps {
 }
 
 const VentasEdit: React.FC<VentasEditProps> = ({ ventas, onUpdateVenta }) => {
-  const { id } = useParams<{ id: string }>();  // Obtiene el ID desde la URL
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
-  const [formData, setFormData] = useState<Omit<Venta, 'id'>>({
-    fecha: '',
-    productos: [],
-    total: 0,
-    empleado: ''
-  });
+  const [ventaEditada, setVentaEditada] = useState<Venta | null>(null);
 
   useEffect(() => {
-    if (id) {
-      const venta = ventas.find(v => v.id === parseInt(id));
-      if (venta) {
-        setFormData({ 
-          fecha: venta.fecha, 
-          productos: venta.productos, 
-          total: venta.total, 
-          empleado: venta.empleado || '' 
-        });
-      }
+    // Buscar la venta a editar cuando el componente se monta o cambia el id
+    const venta = ventas.find(v => v.id === Number(id));
+    if (venta) {
+      setVentaEditada(venta);
+    } else {
+      navigate('/ventas'); // Redirigir si no se encuentra la venta
     }
-  }, [id, ventas]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  }, [id, ventas, navigate]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.fecha || formData.productos.length === 0) return;
-
-    const ventaActualizada: Venta = { id: parseInt(id!), ...formData };
-    onUpdateVenta(ventaActualizada);
-    navigate("/ventas"); // Redirige a la lista de ventas
+    if (ventaEditada) {
+      onUpdateVenta(ventaEditada); // Usamos la prop callback para actualizar
+      navigate('/ventas'); // Redirigir después de actualizar
+    }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (ventaEditada) {
+      setVentaEditada({
+        ...ventaEditada,
+        [e.target.name]: e.target.value
+      });
+    }
+  };
+
+  if (!ventaEditada) {
+    return <div>Cargando...</div>;
+  }
+
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-      <div className="w-100 max-w-md p-4 bg-white rounded shadow-lg">
-        <h2 className="text-center mb-4 text-dark">Editar Venta</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">Fecha:</label>
-            <input
-              type="date"
-              name="fecha"
-              value={formData.fecha}
-              onChange={handleChange}
-              className="form-control"
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Empleado:</label>
-            <input
-              type="text"
-              name="empleado"
-              value={formData.empleado}
-              onChange={handleChange}
-              className="form-control"
-            />
-          </div>
-          <button type="submit" className="btn btn-success">Guardar Cambios</button>
-        </form>
-      </div>
+    <div className="container mt-4">
+      <h2>Editar Venta</h2>
+      <form onSubmit={handleSubmit}>
+        {/* Aquí tus campos del formulario */}
+        <div className="mb-3">
+          <label className="form-label">Cliente</label>
+          <input
+            type="text"
+            className="form-control"
+            name="cliente"
+            value={ventaEditada.cliente || ''}
+            onChange={handleChange}
+          />
+        </div>
+        
+        {/* Más campos según tu modelo Venta */}
+        
+        <button type="submit" className="btn btn-primary">
+          Guardar Cambios
+        </button>
+        <button 
+          type="button" 
+          className="btn btn-secondary ms-2"
+          onClick={() => navigate('/ventas')}
+        >
+          Cancelar
+        </button>
+      </form>
     </div>
   );
 };

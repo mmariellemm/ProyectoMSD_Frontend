@@ -18,9 +18,9 @@ const ClientesAdd: React.FC<ClientesAddProps> = ({ onAddCliente, onClose }) => {
 
     const nuevoCliente: Cliente = {
       id: Date.now(),
-      name: nombre, // Mapeamos nombre -> name
+      name: nombre,
       email,
-      phone: telefono // Mapeamos telefono -> phone
+      phone: telefono
     };
 
     onAddCliente(nuevoCliente);

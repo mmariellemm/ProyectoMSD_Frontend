@@ -1,49 +1,38 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
 
-const PaymentForm: React.FC = () => {
-  const [amount, setAmount] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
+interface PaymentFormProps {
+  total: number; // Total a pagar
+  onPaymentConfirmed: (payment: number) => void; // Función que maneja el pago confirmado
+}
+
+const PaymentForm: React.FC<PaymentFormProps> = ({ total, onPaymentConfirmed }) => {
+  const [payment, setPayment] = useState<number | "">("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setShowModal(true);
+    if (typeof payment === "number" && payment >= total) {
+      onPaymentConfirmed(payment); // Llamamos a la función con el monto pagado
+    } else {
+      alert("El monto ingresado es insuficiente.");
+    }
   };
 
   return (
     <div className="container mt-4">
-      <h2 className="text-center">Registrar Pago</h2>
+      <h2 className="text-center">Ingresar Pago</h2>
       <form onSubmit={handleSubmit} className="mt-3">
         <div className="mb-3">
-          <label className="form-label">Monto a pagar:</label>
+          <label className="form-label">Total a Pagar: ${total.toFixed(2)} MXN</label>
           <input 
             type="number" 
             className="form-control" 
-            value={amount} 
-            onChange={(e) => setAmount(e.target.value)} 
+            value={payment} 
+            onChange={(e) => setPayment(Number(e.target.value))} 
             required 
           />
         </div>
-        <button type="submit" className="btn btn-primary w-100">OK</button>
+        <button type="submit" className="btn btn-success w-100">Confirmar Pago</button>
       </form>
-
-      {showModal && (
-        <div className="modal fade show d-block" tabIndex={-1} role="dialog">
-          <div className="modal-dialog">
-            <div className="modal-content bg-success text-white">
-              <div className="modal-header">
-                <h5 className="modal-title">Success</h5>
-              </div>
-              <div className="modal-body text-center">
-                <p>Se ha pagado y registrado correctamente.</p>
-                <button className="btn btn-light" onClick={() => navigate("/ticket")}>Aceptar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

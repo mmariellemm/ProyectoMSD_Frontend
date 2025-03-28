@@ -1,41 +1,106 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-
-// Definir la estructura del estado que recibimos
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-}
+import { Product } from "../../../interfaces/types";
 
 interface LocationState {
-  cart: Product[];
+  cart: Array<Product & { quantity?: number }>;
   total: number;
+  paymentAmount: number;
+  paymentMethod: string;
+  change: number;
+  fecha: string;
+  empleado: string;
+  cliente: string;
+  tarjetaNumero?: string;
 }
 
 const Ticket: React.FC = () => {
   const location = useLocation();
-
-  // Verificamos que location.state existe antes de usarlo
-  const { cart, total }: LocationState = location.state || { cart: [], total: 0 };
+  const { 
+    cart = [], 
+    total = 0, 
+    paymentAmount = 0, 
+    paymentMethod = '', 
+    change = 0,
+    fecha = '',
+    empleado = '',
+    cliente = '',
+    tarjetaNumero = ''
+  }: LocationState = location.state || {};
 
   return (
     <div className="container mt-4">
-      <h2>Ticket de Compra</h2>
-      <h4>Detalles de la Compra:</h4>
-      <ul className="list-group">
-        {cart.length > 0 ? (
-          cart.map((item) => (
-            <li key={item.id} className="list-group-item">
-              {item.name} - ${item.price}
-            </li>
-          ))
-        ) : (
-          <li className="list-group-item">No hay productos en el carrito.</li>
-        )}
-      </ul>
-      <h5 className="mt-3">Total: ${total}</h5>
-      <p>Gracias por tu compra. ¡Nos vemos pronto!</p>
+      <div className="card">
+        <div className="card-header">
+          <h2 className="text-center">Ticket de Compra</h2>
+          <div className="text-center">
+            <p>Fecha: {new Date(fecha).toLocaleDateString()}</p>
+          </div>
+        </div>
+        
+        <div className="card-body">
+          <div className="mb-4">
+            <h4>Detalles de la Venta</h4>
+            <p><strong>Empleado:</strong> {empleado}</p>
+            <p><strong>Cliente:</strong> {cliente}</p>
+            <p><strong>Método de pago:</strong> {paymentMethod === 'efectivo' ? 'Efectivo' : 'Tarjeta'}</p>
+            {paymentMethod === 'tarjeta' && tarjetaNumero && (
+              <p><strong>Tarjeta:</strong> **** **** **** {tarjetaNumero.slice(-4)}</p>
+            )}
+          </div>
+
+          <h4>Productos:</h4>
+          <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cart.length > 0 ? (
+                cart.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.name}</td>
+                    <td>{item.quantity || 1}</td>
+                    <td>${item.price}</td>
+                    <td>${(item.price * (item.quantity || 1)).toFixed(2)}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} className="text-center">No hay productos</td>
+                </tr>
+              )}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan={3} className="text-end"><strong>Total:</strong></td>
+                <td><strong>${total.toFixed(2)}</strong></td>
+              </tr>
+              {paymentMethod === 'efectivo' && (
+                <>
+                  <tr>
+                    <td colSpan={3} className="text-end"><strong>Efectivo recibido:</strong></td>
+                    <td><strong>${paymentAmount.toFixed(2)}</strong></td>
+                  </tr>
+                  <tr>
+                    <td colSpan={3} className="text-end"><strong>Cambio:</strong></td>
+                    <td><strong>${change.toFixed(2)}</strong></td>
+                  </tr>
+                </>
+              )}
+            </tfoot>
+          </table>
+
+          <div className="text-center mt-4">
+            <p className="lead">¡Gracias por su compra!</p>
+            <p>Vuelva pronto</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

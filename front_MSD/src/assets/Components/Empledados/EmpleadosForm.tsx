@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Employee } from "../../../interfaces/types";
-import "bootstrap/dist/css/bootstrap.min.css"; // Asegura que Bootstrap esté importado
+import "bootstrap/dist/css/bootstrap.min.css";
 
 interface EmpleadosFormProps {
-  onSubmit: (employee: Omit<Employee, 'id' | 'role'>, id?: number) => void; // Eliminado 'role'
+  onSubmit: (employee: Omit<Employee, 'id'>, id?: number) => void;
   employees: Employee[];
 }
 
@@ -13,11 +13,13 @@ const EmpleadosForm: React.FC<EmpleadosFormProps> = ({ onSubmit, employees }) =>
   const { id } = useParams();
   const employeeToEdit = employees.find(emp => emp.id === Number(id));
 
-  const [formData, setFormData] = useState<Omit<Employee, 'id' | 'role'>>({ // Eliminado 'role'
+  const [formData, setFormData] = useState<Omit<Employee, 'id'>>({ 
     name: employeeToEdit?.name || "",
     email: employeeToEdit?.email || "",
     joiningDate: employeeToEdit?.joiningDate || "",
     image: employeeToEdit?.image || "",
+    password: employeeToEdit?.password || "", // Añadido campo password
+    role: employeeToEdit?.role || "Empleado" // Añadido campo role con valor por defecto
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,6 +69,43 @@ const EmpleadosForm: React.FC<EmpleadosFormProps> = ({ onSubmit, employees }) =>
           </div>
           <div className="col-8">
             <input id="form-email" className="form-control" type="email" name="email" value={formData.email} onChange={handleChange} required />
+          </div>
+        </div>
+
+        <div className="col-10 mb-3 d-flex">
+          <div className="col-4">
+            <label htmlFor="form-password">Contraseña</label>
+          </div>
+          <div className="col-8">
+            <input 
+              id="form-password" 
+              className="form-control" 
+              type="password" 
+              name="password" 
+              value={formData.password} 
+              onChange={handleChange} 
+              required 
+              placeholder={employeeToEdit ? "Dejar en blanco para no cambiar" : ""}
+            />
+          </div>
+        </div>
+
+        <div className="col-10 mb-3 d-flex">
+          <div className="col-4">
+            <label htmlFor="form-role">Rol</label>
+          </div>
+          <div className="col-8">
+            <select
+              id="form-role"
+              className="form-control"
+              name="role"
+              value={formData.role}
+              onChange={(e) => setFormData({...formData, role: e.target.value as "Administrador" | "Empleado"})}
+              required
+            >
+              <option value="Administrador">Administrador</option>
+              <option value="Empleado">Empleado</option>
+            </select>
           </div>
         </div>
 

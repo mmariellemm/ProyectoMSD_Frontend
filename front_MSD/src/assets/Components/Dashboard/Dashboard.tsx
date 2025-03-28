@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { Bar, Pie, Line } from 'react-chartjs-2';
 import { 
   Chart as ChartJS, 
@@ -13,6 +13,7 @@ import {
   Tooltip, 
   Legend 
 } from 'chart.js';
+import "./Dashboard.css";
 
 // Registrar componentes necesarios
 ChartJS.register(
@@ -36,14 +37,22 @@ interface ProductosData {
 }
 
 const Dashboard: React.FC = () => {
-  const usuarioAutenticado = JSON.parse(localStorage.getItem('usuarioAutenticado') || '{}');
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [ventasEmpleado, setVentasEmpleado] = useState<VentasData>({});
   const [productosVendidos, setProductosVendidos] = useState<ProductosData>({});
   const [ventasTienda, setVentasTienda] = useState<VentasData>({});
   const [rendimientoTienda, setRendimientoTienda] = useState<VentasData>({});
 
+  const usuarioAutenticado = JSON.parse(localStorage.getItem('usuarioAutenticado') || '{}');
+
   useEffect(() => {
+    // Redirigir si no está autenticado
+    if (!usuarioAutenticado.id) {
+      navigate("/login");
+      return;
+    }
+
     // Simulación de carga de datos
     const fetchData = async () => {
       try {
@@ -90,7 +99,7 @@ const Dashboard: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [navigate, usuarioAutenticado.id]);
 
   if (!usuarioAutenticado || !usuarioAutenticado.rol) {
     return <Navigate to="/login" />;
@@ -114,157 +123,204 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container mt-4">
-      <h1 className="mb-4">Bienvenido, {usuarioAutenticado.name || 'Usuario'}</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1>Bienvenido, {usuarioAutenticado.name || 'Usuario'}</h1>
+          <p className="lead">Rol: {usuarioAutenticado.rol === 'admin' ? 'Administrador' : 'Empleado'}</p>
+        </div>
+      </div>
       
       {usuarioAutenticado.rol === 'admin' && (
-        <div className="row">
-          <div className="col-md-6 mb-4">
-            <div className="card h-100">
-              <div className="card-body">
-                <h5 className="card-title">Ventas por Mes</h5>
-                <div className="chart-container" style={{ height: '300px', position: 'relative' }}>
-                  <Bar 
-                    options={{
-                      responsive: true,
-                      plugins: {
-                        legend: { position: 'top' },
-                        title: { display: true, text: 'Ventas Mensuales' }
-                      }
-                    }}
-                    data={{
-                      labels: Object.keys(ventasTienda),
-                      datasets: [{
-                        label: 'Ventas',
-                        data: Object.values(ventasTienda),
-                        backgroundColor: 'rgba(53, 162, 235, 0.5)'
-                      }]
-                    }} 
-                  />
+        <>
+          <div className="row">
+            <div className="col-md-6 mb-4">
+              <div className="card h-100">
+                <div className="card-body">
+                  <h5 className="card-title">Ventas por Mes</h5>
+                  <div className="chart-container" style={{ height: '300px', position: 'relative' }}>
+                    <Bar 
+                      options={{
+                        responsive: true,
+                        plugins: {
+                          legend: { position: 'top' },
+                          title: { display: true, text: 'Ventas Mensuales' }
+                        }
+                      }}
+                      data={{
+                        labels: Object.keys(ventasTienda),
+                        datasets: [{
+                          label: 'Ventas',
+                          data: Object.values(ventasTienda),
+                          backgroundColor: 'rgba(53, 162, 235, 0.5)'
+                        }]
+                      }} 
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          
-          <div className="col-md-6 mb-4">
-            <div className="card h-100">
-              <div className="card-body">
-                <h5 className="card-title">Rendimiento de Ventas</h5>
-                <div className="chart-container" style={{ height: '300px', position: 'relative' }}>
-                  <Line 
-                    options={{
-                      responsive: true,
-                      plugins: {
-                        legend: { position: 'top' },
-                        title: { display: true, text: 'Rendimiento' }
-                      }
-                    }}
-                    data={{
-                      labels: Object.keys(rendimientoTienda),
-                      datasets: [{
-                        label: 'Rendimiento',
-                        data: Object.values(rendimientoTienda),
-                        borderColor: 'rgb(255, 99, 132)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                        tension: 0.1
-                      }]
-                    }} 
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {usuarioAutenticado.rol === 'employee' && (
-        <div className="row">
-          <div className="col-md-6 mb-4">
-            <div className="card h-100">
-              <div className="card-body">
-                <h5 className="card-title">Tus Ventas Mensuales</h5>
-                <div className="chart-container" style={{ height: '300px', position: 'relative' }}>
-                  <Bar 
-                    options={{
-                      responsive: true,
-                      plugins: {
-                        legend: { position: 'top' },
-                        title: { display: true, text: 'Tus Ventas' }
-                      }
-                    }}
-                    data={{
-                      labels: Object.keys(ventasEmpleado),
-                      datasets: [{
-                        label: 'Ventas realizadas',
-                        data: Object.values(ventasEmpleado),
-                        backgroundColor: 'rgba(75, 192, 192, 0.6)'
-                      }]
-                    }} 
-                  />
-                </div>
-                <p className="mt-2 text-muted">Total: {Object.values(ventasEmpleado).reduce((a, b) => a + b, 0)} ventas</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="col-md-6 mb-4">
-            <div className="card h-100">
-              <div className="card-body">
-                <h5 className="card-title">Tus Productos Más Vendidos</h5>
-                <div className="chart-container" style={{ height: '300px', position: 'relative' }}>
-                  <Pie 
-                    options={{
-                      responsive: true,
-                      plugins: {
-                        legend: { position: 'top' },
-                        title: { display: true, text: 'Tus Productos' }
-                      }
-                    }}
-                    data={{
-                      labels: Object.keys(productosVendidos),
-                      datasets: [{
-                        data: Object.values(productosVendidos),
-                        backgroundColor: [
-                          'rgba(255, 99, 132, 0.7)',
-                          'rgba(54, 162, 235, 0.7)',
-                          'rgba(255, 206, 86, 0.7)',
-                          'rgba(75, 192, 192, 0.7)',
-                        ]
-                      }]
-                    }} 
-                  />
+            
+            <div className="col-md-6 mb-4">
+              <div className="card h-100">
+                <div className="card-body">
+                  <h5 className="card-title">Rendimiento de Ventas</h5>
+                  <div className="chart-container" style={{ height: '300px', position: 'relative' }}>
+                    <Line 
+                      options={{
+                        responsive: true,
+                        plugins: {
+                          legend: { position: 'top' },
+                          title: { display: true, text: 'Rendimiento' }
+                        }
+                      }}
+                      data={{
+                        labels: Object.keys(rendimientoTienda),
+                        datasets: [{
+                          label: 'Rendimiento',
+                          data: Object.values(rendimientoTienda),
+                          borderColor: 'rgb(255, 99, 132)',
+                          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                          tension: 0.1
+                        }]
+                      }} 
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="col-12 mb-4">
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">Tus Métricas</h5>
-                <div className="row text-center">
-                  <div className="col-md-4">
-                    <div className="p-3 bg-light rounded">
-                      <h3>{Object.values(ventasEmpleado).reduce((a, b) => a + b, 0)}</h3>
-                      <p className="mb-0">Ventas totales</p>
+          <div className="row mt-2">
+            <div className="col-12">
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">Métricas Globales</h5>
+                  <div className="row text-center">
+                    <div className="col-md-3">
+                      <div className="p-3 bg-light rounded">
+                        <h3>{Object.values(ventasTienda).reduce((a, b) => a + b, 0)}</h3>
+                        <p className="mb-0">Ventas totales</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="p-3 bg-light rounded">
-                      <h3>{Math.max(...Object.values(ventasEmpleado))}</h3>
-                      <p className="mb-0">Mejor mes</p>
+                    <div className="col-md-3">
+                      <div className="p-3 bg-light rounded">
+                        <h3>{Math.max(...Object.values(ventasTienda))}</h3>
+                        <p className="mb-0">Mejor mes</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="p-3 bg-light rounded">
-                      <h3>{encontrarProductoEstrella(productosVendidos)}</h3>
-                      <p className="mb-0">Producto estrella</p>
+                    <div className="col-md-3">
+                      <div className="p-3 bg-light rounded">
+                        <h3>{(Object.values(ventasTienda).reduce((a, b) => a + b, 0) / Object.keys(ventasTienda).length).toFixed(1)}</h3>
+                        <p className="mb-0">Promedio mensual</p>
+                      </div>
+                    </div>
+                    <div className="col-md-3">
+                      <div className="p-3 bg-light rounded">
+                        <h3>+{(Object.values(ventasTienda)[Object.values(ventasTienda).length - 1] - Object.values(ventasTienda)[0])}</h3>
+                        <p className="mb-0">Crecimiento</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </>
+      )}
+      
+      {usuarioAutenticado.rol === 'employee' && (
+        <>
+          <div className="row">
+            <div className="col-md-6 mb-4">
+              <div className="card h-100">
+                <div className="card-body">
+                  <h5 className="card-title">Tus Ventas Mensuales</h5>
+                  <div className="chart-container" style={{ height: '300px', position: 'relative' }}>
+                    <Bar 
+                      options={{
+                        responsive: true,
+                        plugins: {
+                          legend: { position: 'top' },
+                          title: { display: true, text: 'Tus Ventas' }
+                        }
+                      }}
+                      data={{
+                        labels: Object.keys(ventasEmpleado),
+                        datasets: [{
+                          label: 'Ventas realizadas',
+                          data: Object.values(ventasEmpleado),
+                          backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                        }]
+                      }} 
+                    />
+                  </div>
+                  <p className="mt-2 text-muted">Total: {Object.values(ventasEmpleado).reduce((a, b) => a + b, 0)} ventas</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="col-md-6 mb-4">
+              <div className="card h-100">
+                <div className="card-body">
+                  <h5 className="card-title">Tus Productos Más Vendidos</h5>
+                  <div className="chart-container" style={{ height: '300px', position: 'relative' }}>
+                    <Pie 
+                      options={{
+                        responsive: true,
+                        plugins: {
+                          legend: { position: 'top' },
+                          title: { display: true, text: 'Tus Productos' }
+                        }
+                      }}
+                      data={{
+                        labels: Object.keys(productosVendidos),
+                        datasets: [{
+                          data: Object.values(productosVendidos),
+                          backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                          ]
+                        }]
+                      }} 
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="row mt-2">
+            <div className="col-12 mb-4">
+              <div className="card">
+                <div className="card-body">
+                  <h5 className="card-title">Tus Métricas</h5>
+                  <div className="row text-center">
+                    <div className="col-md-4">
+                      <div className="p-3 bg-light rounded">
+                        <h3>{Object.values(ventasEmpleado).reduce((a, b) => a + b, 0)}</h3>
+                        <p className="mb-0">Ventas totales</p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="p-3 bg-light rounded">
+                        <h3>{Math.max(...Object.values(ventasEmpleado))}</h3>
+                        <p className="mb-0">Mejor mes</p>
+                      </div>
+                    </div>
+                    <div className="col-md-4">
+                      <div className="p-3 bg-light rounded">
+                        <h3>{encontrarProductoEstrella(productosVendidos)}</h3>
+                        <p className="mb-0">Producto estrella</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

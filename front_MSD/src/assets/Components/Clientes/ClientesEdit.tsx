@@ -4,22 +4,20 @@ import { Cliente } from "../../../interfaces/types";
 
 interface ClientesEditProps {
   clientes: Cliente[];
-  onEditCliente: (cliente: Cliente) => void;
-  onUpdateCliente: (cliente: Cliente) => void;
+  onUpdateCliente: (cliente: Cliente) => void;  // Only keep the onUpdateCliente prop
 }
 
-
 const ClientesEdit: React.FC<ClientesEditProps> = ({ clientes, onUpdateCliente }) => {
-  const { id } = useParams();  // Obtiene el ID del cliente desde la URL
+  const { id } = useParams();
   const navigate = useNavigate();
   
-  const [formData, setFormData] = useState<Omit<Cliente, 'id'>>({ nombre: '', email: '' });
+  const [formData, setFormData] = useState<Omit<Cliente, 'id'>>({ name: '', email: '', phone: '' });
 
   useEffect(() => {
     if (id) {
       const cliente = clientes.find(cliente => cliente.id === parseInt(id));
       if (cliente) {
-        setFormData({ nombre: cliente.nombre, email: cliente.email });
+        setFormData({ name: cliente.name, email: cliente.email, phone: cliente.phone });
       }
     }
   }, [id, clientes]);
@@ -31,9 +29,9 @@ const ClientesEdit: React.FC<ClientesEditProps> = ({ clientes, onUpdateCliente }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.nombre || !formData.email) return;
+    if (!formData.name || !formData.email || !formData.phone) return;
 
-    const clienteActualizado: Cliente = { id: parseInt(id!), ...formData };
+    const clienteActualizado: Cliente = { id: parseInt(id!), name: formData.name, email: formData.email, phone: formData.phone };
     onUpdateCliente(clienteActualizado);
     navigate("/clientes");
   };
@@ -44,12 +42,12 @@ const ClientesEdit: React.FC<ClientesEditProps> = ({ clientes, onUpdateCliente }
         <h2 className="text-center mb-4 text-dark">Editar Cliente</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="nombre" className="form-label">Nombre:</label>
+            <label htmlFor="name" className="form-label">Nombre:</label>
             <input
-              id="nombre"
+              id="name"
               type="text"
-              name="nombre"
-              value={formData.nombre}
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               className="form-control"
               required
@@ -62,6 +60,18 @@ const ClientesEdit: React.FC<ClientesEditProps> = ({ clientes, onUpdateCliente }
               type="email"
               name="email"
               value={formData.email}
+              onChange={handleChange}
+              className="form-control"
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="phone" className="form-label">Teléfono:</label>
+            <input
+              id="phone"
+              type="text"
+              name="phone"
+              value={formData.phone}
               onChange={handleChange}
               className="form-control"
               required

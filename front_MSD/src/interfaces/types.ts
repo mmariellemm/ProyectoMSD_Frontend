@@ -1,16 +1,18 @@
 export interface Employee {
-    id: number;
-    name: string;
-    email: string;
-    role: "Administrador" | "Empleado"; // Opciones fijas para el rol
-    joiningDate: string; // Se guarda como una cadena en formato YYYY-MM-DD
-    image?: string; // La imagen puede ser opcional y en formato base64 o URL
-  }
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  role: "Administrador" | "Empleado";
+  joiningDate: string;
+  image?: string;
+}
 
   export interface Product {
     id: number;
     name: string;
     price: number;
+    stock: number;
     description: string;
     image: string;
   }
@@ -33,11 +35,19 @@ export interface Employee {
   export interface Venta {
     id: number;
     fecha: string;
-    productos: { nombre: string; cantidad: number; precio: number }[];
+    productos: Array<{
+      id: number;
+      nombre: string;
+      cantidad: number;
+      precio: number;
+    }>;
     total: number;
-    empleado?: string; // Opcional
+    empleado: string;
+    cliente: string;
+    metodoPago: string;
+    montoRecibido: number;
+    tarjetaNumero?: string;
   }
-
   export interface DetalleVenta {
     id: number;
     empleado: string;

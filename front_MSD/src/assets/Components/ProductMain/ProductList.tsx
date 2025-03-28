@@ -1,12 +1,5 @@
 import React from "react";
-
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  description: string;
-};
+import { Product } from "../../../interfaces/types";
 
 interface ProductListProps {
   products: Product[];
@@ -23,6 +16,7 @@ const ProductList: React.FC<ProductListProps> = ({ products, onEdit, onDelete })
             <th className="py-2 px-4 border-b text-left">Imagen</th>
             <th className="py-2 px-4 border-b text-left">Nombre</th>
             <th className="py-2 px-4 border-b text-left">Precio</th>
+            <th className="py-2 px-4 border-b text-left">Stock</th>
             <th className="py-2 px-4 border-b text-left">Descripción</th>
             <th className="py-2 px-4 border-b text-left">Acciones</th>
           </tr>
@@ -42,6 +36,7 @@ const ProductList: React.FC<ProductListProps> = ({ products, onEdit, onDelete })
               <td className="py-2 px-4 border-b text-green-600 font-bold">
                 ${product.price.toFixed(2)}
               </td>
+              <td className="py-2 px-4 border-b truncate max-w-xs">{product.stock}</td>
               <td className="py-2 px-4 border-b truncate max-w-xs">{product.description}</td>
               <td className="py-2 px-4 border-b flex space-x-2">
                 <button

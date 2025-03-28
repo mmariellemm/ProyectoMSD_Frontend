@@ -1,6 +1,7 @@
 import { Product } from "../../../interfaces/types";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./ProductoVista.css";
 
 const ProductoVista: React.FC<{ products: Product[]; onEdit: (id: number) => void; onDelete: (id: number) => void }> = ({
   products,
@@ -11,14 +12,12 @@ const ProductoVista: React.FC<{ products: Product[]; onEdit: (id: number) => voi
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center">Lista de Productos</h2>
-
-      {/* Botón para agregar producto */}
-      <div className="mb-3">
-        <button className="btn btn-success" onClick={() => navigate("/agregar-producto")}>
-          Agregar Producto
-        </button>
-      </div>
+        <div className="encabezado">
+            <button className="add-product-btn" onClick={() => navigate("/agregar-producto")}>
+              Agregar Producto
+            </button>
+          <h2 className="inventory-title">Inventario</h2>
+        </div>
 
       <table className="table table-striped table-bordered">
         <thead className="table-dark">
@@ -26,6 +25,7 @@ const ProductoVista: React.FC<{ products: Product[]; onEdit: (id: number) => voi
             <th>ID</th>
             <th>Nombre</th>
             <th>Precio</th>
+            <th>Stock</th>
             <th>Descripción</th>
             <th>Imagen</th>
             <th>Acciones</th>
@@ -37,6 +37,7 @@ const ProductoVista: React.FC<{ products: Product[]; onEdit: (id: number) => voi
               <td>{product.id}</td>
               <td>{product.name}</td>
               <td>${product.price}</td>
+              <td>{product.stock}</td>
               <td>{product.description}</td>
               <td>
                 {product.image && <img src={product.image} alt={product.name} width="50" />}

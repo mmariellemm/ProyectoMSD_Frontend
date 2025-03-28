@@ -14,11 +14,15 @@ const POS: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Recupera el carrito y el método de pago desde el estado de la ubicación
-  const receivedCart = (location.state as { cart: CartItem[], paymentMethod: string }) || { cart: [], paymentMethod: "" };
+  // Recupera el carrito, el método de pago y el cliente desde el estado de la ubicación
+  const receivedCart = (location.state as { cart: CartItem[], paymentMethod: string, cliente: any }) || { cart: [], paymentMethod: "", cliente: null };
+  
   const [cartItems, setCartItems] = useState<CartItem[]>(receivedCart.cart);
   const [amountPaid, setAmountPaid] = useState<number>(0); // Guardar el monto pagado
   const [showModal, setShowModal] = useState<boolean>(false);
+  
+  // Obtener los datos del cliente
+  const cliente = receivedCart.cliente;
 
   const getSafePrice = (price: any): number => {
     const num = typeof price === 'number' ? price : Number(price);
@@ -62,7 +66,8 @@ const POS: React.FC = () => {
         })),
         total: getTotal(),
         amountPaid,
-        change: receivedCart.paymentMethod === "Efectivo" ? amountPaid - getTotal() : 0
+        change: receivedCart.paymentMethod === "Efectivo" ? amountPaid - getTotal() : 0,
+        cliente, // Pasar el cliente al ticket
       },
     });
   };
@@ -154,7 +159,7 @@ const POS: React.FC = () => {
 
               {/* Mostrar el formulario correspondiente según el método de pago */}
               {receivedCart.paymentMethod === "Tarjeta" ? (
-                <PaymentForm />
+                <PaymentForm total={getTotal()} onPaymentConfirmed={handlePayment} />
               ) : (
                 <AmountForm totalPrice={getTotal()} onConfirm={handlePayment} />
               )}

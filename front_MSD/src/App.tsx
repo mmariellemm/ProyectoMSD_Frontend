@@ -13,11 +13,13 @@ import EmpleadoTable from "./assets/Components/Empledados/EmpleadoTable";
 import ProductoVista from "./assets/Components/productos/ProductoVista";
 import ProductoAgregar from "./assets/Components/productos/ProductoAgregar";
 import OnlineStore from "./assets/Components/ProductMain/OnlineStore";
+import ReporteVentas from "./assets/Components/Ventas/ReporteVentas";
 import { Employee, Product, Cliente, Venta } from "./interfaces/types";
 import Dashboard from "./assets/Components/Dashboard/Dashboard";
 import VentasAdd from "./assets/Components/Ventas/VentasAdd";
 import VentasEdit from "./assets/Components/Ventas/VentasEdit";
 import VentasList from "./assets/Components/Ventas/VentasList";
+import VentasPOS from "./assets/Components/Punto de venta/VentasPOS";
 import Navbar from "./assets/Components/Navbar";
 import './App.css';
 
@@ -33,8 +35,26 @@ const App: React.FC = () => {
     return storedEmployees ? JSON.parse(storedEmployees) : [];
   });
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-  
   const navigate = useNavigate();
+
+  useEffect(() => {
+
+    const storedClientes = localStorage.getItem('clientes');
+    if (storedClientes) {
+      setClientes(JSON.parse(storedClientes));
+    }
+  
+    const storedEmployees = localStorage.getItem('employees');
+    if (storedEmployees) {
+      setEmployees(JSON.parse(storedEmployees));
+    }
+  
+    const storedProducts = localStorage.getItem('products');
+    if (storedProducts) {
+      setProducts(JSON.parse(storedProducts));
+    }
+  }, []);
+  
 
   const handleAddButtonClick = () => {
     navigate("/agregar-cliente");
@@ -160,12 +180,12 @@ const App: React.FC = () => {
   }, [employees]);
 
   return (
-    <div className="container-fluid vw-100 p-0 d-flex">
+    <div className="">
       {/* Add the Navbar here */}
       <Navbar />
 
       <div className="flex-grow-1 d-flex flex-column">
-        <div className="p-4 bg-light">
+        <div className="p-4">
           {showSuccessAlert && (
             <div className="alert alert-success alert-dismissible fade show" role="alert">
               Cliente agregado exitosamente!
@@ -215,7 +235,7 @@ const App: React.FC = () => {
             />
             
             <Route path="/pos" element={<POS />} />
-            <Route path="/tienda" element={<OnlineStore products={products} />} />
+            <Route path="/tienda" element={ <OnlineStore products={products} selectedProduct={null}  onProductSelect={(product)=> { console.log('Producto seleccionado:', product);}} /> }/>
             <Route
               path="/inventario"
               element={
@@ -263,16 +283,28 @@ const App: React.FC = () => {
               element={
                 <ClientesEdit 
                   clientes={clientes} 
-                  onEditCliente={handleEditCliente} 
-                  onUpdateCliente={handleAddCliente}
+                  onUpdateCliente={handleAddCliente}  // Solo pasa onUpdateCliente
                 />
               }
             />
+            <Route 
+              path="/reporte-empleados" 
+              element={<ReporteVentas ventas={ventas} empleados={employees} />} 
+            />
+            <Route path="/ventas/add" element={
+              <VentasPOS 
+                onAddVenta={handleAddVenta}
+                empleados={employees}
+                clientes={clientes}
+                products={products}
+                empleadoAutenticado={JSON.parse(localStorage.getItem("usuarioAutenticado") || "{}")}  // Aquí le pasas el empleado autenticado
+              />
+            } />
             <Route path="/ventas" element={<VentasList onAddVenta={() => {}} ventas={ventas} />} />
-            <Route path="/ventas/add" element={<VentasAdd onAddVenta={handleAddVenta} />} />
+            <Route path="/ventasadd" element={ <VentasAdd onAddVenta={handleAddVenta} empleados={employees} clientes={clientes} products={products}/>}/>
             <Route path="/ventas/edit/:id" element={<VentasEdit ventas={ventas} onUpdateVenta={handleUpdateVenta} />} />
             <Route path="/ticket" element={<Ticket />} />
-            <Route path="/login" element={<Login />} />  
+            <Route path="/login" element={<Login empleados={employees} />} /> 
             <Route path="/registro" element={<Registro />} />
             <Route path="/dashboard" element={<Dashboard />} />
           </Routes>

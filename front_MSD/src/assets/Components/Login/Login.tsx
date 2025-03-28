@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import { Employee } from "../../../interfaces/types";
 
-function Login() {
+interface LoginProps {
+  empleados: Employee[];
+}
+
+function Login({ empleados }: LoginProps) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -30,13 +35,13 @@ function Login() {
       setIsLoading(false);
       return;
     }
-
+    
     try {
-      // Simulación de llamada a API con retraso
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Simulación de tiempo de espera
+      await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Verificación de credenciales (en producción sería una llamada real a tu backend)
-      let userData;
+      let userData: any = null;
+
       if (formData.email === "admin@proyecto.com" && formData.password === "12345") {
         userData = {
           id: 1,
@@ -54,14 +59,34 @@ function Login() {
           name: "Empleado"
         };
       } else {
-        throw new Error("Credenciales incorrectas");
+        const empleado = empleados.find(emp => emp.email === formData.email);
+
+        if (!empleado) {
+          throw new Error("No existe un empleado con este email");
+        }
+
+        // Verificar contraseña
+        if (formData.password !== empleado.password) {
+          throw new Error("Contraseña incorrecta");
+        }
+
+        // Crear objeto de usuario autenticado sin duplicados
+        const { password, ...empleadoSinPassword } = empleado;
+        const role = empleado.role === "Administrador" ? "admin" : "employee";
+
+        userData = {
+          ...empleadoSinPassword,
+          username: empleado.email.split('@')[0],
+          rol: role
+        };
       }
 
-      // Guardar usuario autenticado
+      // Guardar usuario autenticado en localStorage
       localStorage.setItem('usuarioAutenticado', JSON.stringify(userData));
-      
-      // Redirigir según el rol
-      navigate(userData.rol === "admin" ? "/empleados" : "/dashboard");
+
+      // Redirigir al dashboard o página de inicio
+      navigate("/dashboard");
+
     } catch (err) {
       setError(err instanceof Error ? err.message : "Ocurrió un error al iniciar sesión");
     } finally {

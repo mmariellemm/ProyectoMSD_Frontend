@@ -3,11 +3,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const AmountForm: React.FC<{ totalPrice: number; onConfirm: (payment: number) => void }> = ({ totalPrice, onConfirm }) => {
   const [payment, setPayment] = useState<number | "">("");
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (typeof payment === "number" && payment >= totalPrice) {
-      onConfirm(payment);
+      onConfirm(payment);  // Pasamos el monto pagado al Ticket
     } else {
       alert("El monto ingresado es insuficiente.");
     }

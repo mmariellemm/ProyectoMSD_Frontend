@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import ProductList from "./ProductList";
-
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  image: string; // Se almacenará en Base64
-  description: string;
-};
+import { Product } from "../../../interfaces/types";
 
 type ProductManagerProps = {
   products: Product[];
@@ -22,6 +15,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ products, setProducts }
     id: 0,
     name: "",
     price: 0,
+    stock: 0,
     image: "",
     description: ""
   });
@@ -50,7 +44,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ products, setProducts }
     setProducts(updatedProducts);
     localStorage.setItem("products", JSON.stringify(updatedProducts)); // Guardamos en localStorage
     setShowForm(false);
-    setNewProduct({ id: 0, name: "", price: 0, image: "", description: "" });
+    setNewProduct({ id: 0, name: "", price: 0, stock: 0, image: "", description: "" });
   };
 
   // Editar producto
@@ -70,7 +64,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ products, setProducts }
     localStorage.setItem("products", JSON.stringify(updatedProducts)); // Guardamos en localStorage
     setShowForm(false);
     setIsEditing(false);
-    setNewProduct({ id: 0, name: "", price: 0, image: "", description: "" });
+    setNewProduct({ id: 0, name: "", price: 0, stock: 0, image: "", description: "" });
     setCurrentProductId(null);
   };
 
@@ -91,7 +85,7 @@ const ProductManager: React.FC<ProductManagerProps> = ({ products, setProducts }
         onClick={() => {
           setShowForm(true);
           setIsEditing(false);
-          setNewProduct({ id: 0, name: "", price: 0, image: "", description: "" });
+          setNewProduct({ id: 0, name: "", price: 0, stock: 0, image: "", description: "" });
         }}
         className="btn-add fixed bottom-6 right-6 bg-blue-500 text-black px-6 py-3 rounded-full shadow-lg hover:bg-blue-600 transition"
       >
@@ -115,6 +109,14 @@ const ProductManager: React.FC<ProductManagerProps> = ({ products, setProducts }
               type="number"
               name="price"
               placeholder="Precio"
+              value={newProduct.price}
+              onChange={handleInputChange}
+              className="border p-2 rounded w-full mb-2"
+            />
+            <input
+              type="number"
+              name="stock"
+              placeholder="Stock"
               value={newProduct.price}
               onChange={handleInputChange}
               className="border p-2 rounded w-full mb-2"

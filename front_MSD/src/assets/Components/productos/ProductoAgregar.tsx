@@ -16,8 +16,9 @@ const ProductoAgregar: React.FC<{ onSubmit: (product: Product) => void; onClose:
     id: productToEdit?.id ?? 0,
     name: productToEdit?.name ?? "",
     price: productToEdit?.price ?? 0,
+    stock: productToEdit?.stock ?? 0,
     description: productToEdit?.description ?? "",
-    image: null, // Ahora la imagen es un archivo, no una URL
+    image: null,
   });
 
   // Manejar cambios en los inputs de texto
@@ -34,7 +35,7 @@ const ProductoAgregar: React.FC<{ onSubmit: (product: Product) => void; onClose:
     const file = e.target.files?.[0] || null;
     setProduct((prevProduct) => ({
       ...prevProduct,
-      image: file, // Guardamos el archivo en el estado
+      image: file,
     }));
   };
 
@@ -59,11 +60,11 @@ const ProductoAgregar: React.FC<{ onSubmit: (product: Product) => void; onClose:
 
     const updatedProduct: Product = {
       ...product,
-      image: imageBase64, // Guardamos la imagen en Base64
+      image: imageBase64,
     };
 
     onSubmit(updatedProduct);
-    navigate("/productos");
+    navigate("/inventario");
   };
 
   return (
@@ -77,6 +78,10 @@ const ProductoAgregar: React.FC<{ onSubmit: (product: Product) => void; onClose:
         <div className="mb-3">
           <label className="form-label">Precio:</label>
           <input type="number" className="form-control" name="price" value={product.price} onChange={handleChange} />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Stock:</label>
+          <input type="number" className="form-control" name="stock" value={product.stock} onChange={handleChange} />
         </div>
         <div className="mb-3">
           <label className="form-label">Descripción:</label>

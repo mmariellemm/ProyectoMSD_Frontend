@@ -1,12 +1,6 @@
 import React from "react";
-
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  description: string;
-};
+import { Product } from "../../../interfaces/types";
+import "./ProductList.css"
 
 interface ProductListProps {
   products: Product[];
@@ -22,6 +16,7 @@ const ProductList: React.FC<ProductListProps> = ({ products, onEdit, onDelete })
           <img src={product.image} alt={product.name} className="w-full h-32 object-cover mb-2" />
           <h3 className="text-lg font-bold">{product.name}</h3>
           <p className="text-gray-600">${product.price}</p>
+          <p className="text-gray-600">${product.stock}</p>
           <p className="text-sm">{product.description}</p>
           <div className="flex gap-2 mt-2">
             <button
